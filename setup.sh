@@ -49,22 +49,6 @@ sed -r \
 " \
 ${PWD}/nginx/nginx.conf.template > ${PWD}/nginx/nginx.conf
 
-#for jibri recording -- not needed
-#if [ -z $(grep 'snd-aloop' /etc/modules) ]; then
-#    apt -y install linux-image-extra-virtual
-#    # configure 5 capture/playback interfaces
-#    echo "options snd-aloop enable=1,1,1,1,1 index=0,1,2,3,4" > /etc/modprobe.d/alsa-loopback.conf
-#    # setup autoload the module
-#    echo "snd-aloop" >> /etc/modules
-#    modprobe snd-aloop
-#fi
-
-#for local jitsi recording -- not needed
-#if [ -z "$(grep 'config.localRecording' ${PWD}/run/web/config.js)" ]; then
-#    echo -e "config.localRecording = {enabled: true, format: 'flac' };\n\
-#config.toolbarButtons.splice(4,0,'localrecording');" >> ${PWD}/run/web/config.js
-#fi
-
 docker stop ennuicastr_web_1
 docker start ennuicastr_web_1
 
@@ -97,7 +81,7 @@ fi
 
 docker exec -ti ennuicastr_web_1 sh -c " 
     sed -ri  's+server_name.*$+server_name ${PUBLIC_SITE}\;+g' /defaults/meet.conf; 
-# TODO -- generate and install paypal subscriptions
+# TODO -- generate and install paypal subscriptions OOB creation script doesn't work
 #    cd /ennuicastr-server/subscription;
 #    if [ ! -e /external/subscriptions.json ]; then 
 #      node create.js >> /external/subscriptions.json.new;
@@ -110,4 +94,4 @@ docker exec -ti ennuicastr_web_1 sh -c "
 docker-compose up -d
 docker system prune -af
 
-service nginx reload
+service nginx configtest && service nginx reload || echo Error loading nginx
