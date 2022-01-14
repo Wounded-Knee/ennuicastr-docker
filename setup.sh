@@ -92,6 +92,6 @@ docker exec -ti ennuicastr_web_1 sh -c "
 "
 
 docker-compose up -d
-docker system prune -af
+#docker system prune -af
 
 service nginx configtest && service nginx reload || echo Error loading nginx
