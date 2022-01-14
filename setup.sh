@@ -18,6 +18,10 @@ if [ ! -e ${PWD}/run/ennuicastr/config.json.example ]; then
 	curl https://raw.githubusercontent.com/ennuicastr/ennuicastr-server/master/config.json.example -o ${PWD}/run/ennuicastr/config.json.example
 fi
 
+if [ ! -e ${PWD}/run/prosody ]; then
+    mkdir -p ${PWD}/run/{web/crontabs,web/logs,transcripts,prosody/config,prosody/prosody-plugins-custom,jicofo,jvb}
+fi
+
 sed -r \
 "s+https://ennuicastr.com+https://${PUBLIC_SITE}+g;
  s+r.ennuicastr.com+${PUBLIC_SITE}/rec+g;
@@ -33,11 +37,14 @@ sed -r \
 ${PWD}/run/ennuicastr/config.json.example > ${PWD}/run/ennuicastr/config.json
 
 #docker-compose down
+docker-compose stop web
 docker-compose pull
 docker-compose build
 docker-compose up --no-start
 
+mkdir -p ${PWD}/run/web/nginx/site-confs/
 sed -r "s+\\$\\{PUBLIC_SITE\\}+${PUBLIC_SITE}+g;" ${PWD}/nginx/internal-jitsi.conf > ${PWD}/run/web/nginx/site-confs/jitsi.conf
+chown www-data -R ${PWD}/run/web/
 
 # set up hosts for nginx
 rm ${PWD}/run/web/logs/*
@@ -48,13 +55,26 @@ sed -r \
  s+ez.ennuicastr.com+${PUBLIC_SITE}/ennuizel+g;
 " \
 ${PWD}/nginx/nginx.conf.template > ${PWD}/nginx/nginx.conf
+## COPY CERTIFICATES
+if [ ! -e ${PWD}/run/ennuicastr/cert ]; then
+  mkdir -p ${PWD}/run/ennuicastr/cert
+  cp /etc/letsencrypt/live/${PUBLIC_SITE}/fullchain.pem ${PWD}/run/ennuicastr/cert
+  cp /etc/letsencrypt/live/${PUBLIC_SITE}/privkey.pem ${PWD}/run/ennuicastr/cert
+  chown www-data.www-data -R  ${PWD}/run/ennuicastr
+fi
 
-docker stop ennuicastr_web_1
-docker start ennuicastr_web_1
+if [ ! -e ${PWD}/run/prosody/config/certs/jitsi.${PUBLIC_SITE}.key ]; then
+  mkdir -p ${PWD}/run/prosody/config/certs/
+  cp /etc/letsencrypt/live/jitsi.${PUBLIC_SITE}/cert.pem ${PWD}/run/prosody/config/certs/jitsi.${PUBLIC_SITE}.crt
+  cp /etc/letsencrypt/live/jitsi.${PUBLIC_SITE}/privkey.pem ${PWD}/run/prosody/config/certs/jitsi.${PUBLIC_SITE}.key
+  sed -i "s+https://meet.jitsi+https://jitsi.${PUBLIC_SITE}+g;s+/certs/meet.jitsi+/certs/jitsi.${PUBLIC_SITE}+g" ${PWD}/run/prosody/config/conf.d/jitsi-meet.cfg.lua
+  chown www-data.www-data -R  ${PWD}/run/prosody
+fi
+docker-compose start web
 
 #initialize DB
 if [ ! -e ${PWD}/run/ennuicastr/db ]; then
-  docker exec -ti ennuicastr_web_1 sh -c ' \
+  docker-compose exec web sh -c ' \
     mkdir -p /external/db; \
     cd /external/db; \
     sqlite3 ennuicastr.db < /ennuicastr-server/db/ennuicastr.schema;\
@@ -65,21 +85,8 @@ if [ ! -e ${PWD}/run/ennuicastr/db ]; then
   mkdir -p ${PWD}/run/ennuicastr/sounds
   chown www-data.www-data -R  ${PWD}/run/ennuicastr
 fi
-## COPY CERTIFICATES
-if [ ! -e ${PWD}/run/ennuicastr/cert ]; then
-  mkdir -p ${PWD}/run/ennuicastr/cert
-  cp /etc/letsencrypt/live/${PUBLIC_SITE}/fullchain.pem ${PWD}/run/ennuicastr/cert
-  cp /etc/letsencrypt/live/${PUBLIC_SITE}/privkey.pem ${PWD}/run/ennuicastr/cert
-  chown www-data.www-data -R  ${PWD}/run/ennuicastr
-fi
-if [ ! -e ${PWD}/run/prosody/config/certs/jitsi.${PUBLIC_SITE}.key ]; then
-  cp /etc/letsencrypt/live/jitsi.${PUBLIC_SITE}/cert.pem ${PWD}/run/prosody/config/certs/jitsi.${PUBLIC_SITE}.crt
-  cp /etc/letsencrypt/live/jitsi.${PUBLIC_SITE}/privkey.pem ${PWD}/run/prosody/config/certs/jitsi.${PUBLIC_SITE}.key
-  sed -i "s+https://meet.jitsi+https://jitsi.${PUBLIC_SITE}+g;s+/certs/meet.jitsi+/certs/jitsi.${PUBLIC_SITE}+g" ${PWD}/run/prosody/config/conf.d/jitsi-meet.cfg.lua
-  chown www-data.www-data -R  ${PWD}/run/prosody
-fi
 
-docker exec -ti ennuicastr_web_1 sh -c " 
+docker-compose exec web sh -c " 
     sed -ri  's+server_name.*$+server_name ${PUBLIC_SITE}\;+g' /defaults/meet.conf; 
 # TODO -- generate and install paypal subscriptions OOB creation script doesn't work
 #    cd /ennuicastr-server/subscription;

@@ -68,3 +68,9 @@ RUN \
 COPY ./s6/ /etc/services.d/
 COPY ./defaults/ /defaults/
 COPY ./web/ /var/www/html/
+
+VOLUME /config
+VOLUME /external
+VOLUME /var/log/nginx
+VOLUME /usr/share/jitsi-meet/transcripts
+VOLUME /var/spool/cron/crontabs
