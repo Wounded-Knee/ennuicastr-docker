@@ -1,6 +1,6 @@
 #!/bin/bash
 PWD=$(pwd)
-if [ -e "${PWD}.env" ]; then
+if [ ! -e "${PWD}.env" ]; then
 	cp .env.template .env
 	echo "PLEASE SET UP THE ENVIRONMENT VARIABLES IN ENV TO PROCEED!!" >&2
 	exit
