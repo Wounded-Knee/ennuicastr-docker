@@ -39,6 +39,8 @@ docker-compose pull
 docker-compose build
 docker-compose up --no-start
 
+sed -r "s+\\$\\{PUBLIC_SITE\\}+${PUBLIC_SITE}+g;" ${PWD}/nginx/internal-jitsi.conf > ${PWD}/run/web/nginx/site-confs/jitsi.conf
+
 # set up hosts for nginx
 rm ${PWD}/run/web/logs/*
 sed -r \
