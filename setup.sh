@@ -32,8 +32,6 @@ sed -r \
 " \
 ${PWD}/run/ennuicastr/config.json.example > ${PWD}/run/ennuicastr/config.json
 
-sed -r "s+\\$\\{PUBLIC_SITE\\}+${PUBLIC_SITE}+g;" ${PWD}/nginx/internal-jitsi.conf > ${PWD}/run/web/nginx/site-confs/jitsi.conf
-
 #docker-compose down
 docker-compose pull
 docker-compose build
