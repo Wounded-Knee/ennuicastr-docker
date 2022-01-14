@@ -1,0 +1,2 @@
+#!/usr/bin/with-contenv bash
+s6-setuidgid www-data sh -c 'cd /ennuicastr-server/server;./main.sh 2>&1'
