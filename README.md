@@ -61,6 +61,7 @@ docker exec -it ennuicastr_web_1 bash
 - This is not for the faint of heart! The latest version of the projects are checked out from the repository, as all corresponding projects are under development, the changes may break the build
 - The listen port range for ennuicastr-daemon was reduced to 15000-15050 to support small instances, if you need more or want to relocate them, modify the jitsi-ennuicaster/Dockerfile and the setup.sh to update accordingly NB: All exposed ports open docker socket proxies, so you should consider that before extending the port range! I don't recommend to use this as a large instance! 
 - You may add/modify files served by your instance in the jitsi-ennuicastr/web directory, but note you need to rerun setup (or docker compose) for changes to take effect.
+- To modify jitsy services, you need to remove the correspondig files from run and use `docker compose down;docker-compose up -d` to recreate the containers
 
 ## Known issues
 - Fix BOSH connection -- maybe needs to use another certificate?

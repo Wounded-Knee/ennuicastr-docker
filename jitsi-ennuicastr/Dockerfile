@@ -29,6 +29,18 @@ RUN \
 RUN \
  apt -y install make g++ cmake pkgconf unzip meson emscripten fftw3-dev lv2-dev && \
  emconfigure; \
+ cd /ennuicastr &&\
+ git clone https://github.com/ennuizel/ennuizel.git &&\
+ cd ennuizel && \
+ sed -i "s+2.5.4.4-fat+3.6.4.4.1-fat+g" src/main.ts && \
+ make && \
+# git clone https://github.com/ennuizel/ennuizel-noise-repellent-plugin.git &&\
+# cd ennuizel-noise-repellent-plugin &&\
+# cp ../../noise-repellent/noise-repellent-m.* . && make && cd .. &&\
+ git clone https://github.com/ennuizel/ennuizel-better-normalization-plugin &&\
+ cd ennuizel-better-normalization-plugin && make && cd .. &&\
+ git clone https://github.com/Yahweasel/ennuizel-ennuicastr-plugin.git &&\
+ cd ennuizel-ennuicastr-plugin && make && cd .. &&\
  rm -rf /ennuicastr/noise-repellent/noise-repellent.js &&\
  cd /ennuicastr/noise-repellent && \
  git clone https://github.com/Yahweasel/noise-repellent.js.git && \
@@ -39,11 +51,9 @@ RUN \
  cp noise-repellent-m.js noise-repellent-m.asm.js noise-repellent-m.wasm.js noise-repellent-m.wasm.wasm .. &&\
  cd .. && rm -rf /ennuicastr/noise-repellent/noise-repellent.js &&\
  cd /ennuicastr/libav && \
-# wget https://github.com/Yahweasel/libav.js/archive/refs/tags/v3.6.4.4.1.zip && unzip v3.6.4.4.1.zip && cd libav.js-3.6.4.4.1 &&\
-# git clone https://github.com/Yahweasel/libav.js.git && cd libav.js && \
-# cp ../../libav-configs/* configs/ -r && \
-# make build-ennuicastr
- wget https://github.com/Yahweasel/libav.js/releases/download/v3.6.4.4.1/libav.js-3.6.4.4.1.zip && unzip libav.js-3.6.4.4.1.zip && cd libav.js-3.6.4.4.1 &&\
+ wget https://github.com/Yahweasel/libav.js/releases/download/v3.6.4.4.1/libav.js-3.6.4.4.1.zip && \
+ unzip libav.js-3.6.4.4.1.zip && cd libav.js-3.6.4.4.1 &&\
+ cp libav-3.6.4.4.1-fat.* /ennuicastr/ennuizel/libav && \
  cp libav-3.6.4.4.1-fat.asm.js libav-3.6.4.4.1-ennuicastr.asm.js && \
  cp libav-3.6.4.4.1-fat.js libav-3.6.4.4.1-ennuicastr.js && \
  cp libav-3.6.4.4.1-fat.wasm.js libav-3.6.4.4.1-ennuicastr.wasm.js && \
@@ -57,9 +67,12 @@ RUN \
  apt -y install xutils-dev && \
  lndir /ennuicastr-server/web /var/www/html && \
  lndir /ennuicastr /var/www/html/rec && \
+ lndir /ennuicastr/ennuizel /var/www/html/ennuizel && \
+ lndir /ennuicastr/libav /var/www/html/ennuizel/libav && \
  lndir /ennuicastr-server/web/rec /var/www/html/rec && \
  ln -s /ennuicastr-server/ws/client/* /ennuicastr-server/ws/ && \
  ln -s /ennuicastr-server/web/assets/fa /var/www/html/rec && \
+ ln -s /ennuicastr-server/web/assets/fa /var/www/html/ennuizel && \
  rm -r /var/www/html/rec/.gitignore* /var/www/html/rec/.es* /var/www/html/rec/*.md /var/www/html/rec/node_modules && \
  rm -r /var/www/html/rec/libav-configs /var/www/html/rec/src &&\
  rm -r /var/www/html/rec/Makefile /var/www/html/rec/*.json &&\

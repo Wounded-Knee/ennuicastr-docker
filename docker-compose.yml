@@ -8,7 +8,7 @@ services:
             - '${HTTPS_PORT}:443'
             - '15000-15050:15000-15050'
         volumes:
-            - ${CONFIG}/ennuicastr:/external:Z
+            - ${CONFIG}/web/ennuicastr:/external:Z
             - ${CONFIG}/web:/config:Z
             - ${CONFIG}/web/logs:/var/log/nginx:Z
             - ${CONFIG}/web/crontabs:/var/spool/cron/crontabs:Z
