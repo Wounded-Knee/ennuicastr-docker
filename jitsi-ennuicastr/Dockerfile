@@ -2,7 +2,7 @@ FROM jitsi/web:latest
 WORKDIR .
 EXPOSE 80 443 15000-15050
 RUN apt -q update && apt -qy upgrade && apt -q clean
-RUN apt -q update && apt -qy install curl ffmpeg flac vorbis-tools opus-tools sqlite3 git && apt -q clean
+RUN apt -q update && apt -qy install curl ffmpeg flac vorbis-tools opus-tools sqlite3 git at zip && apt -q clean
 RUN \
  apt -y install make g++ npm && \
  git clone https://github.com/ennuicastr/ennuicastr-server.git && \
@@ -70,7 +70,7 @@ RUN \
  lndir /ennuicastr/ennuizel /var/www/html/ennuizel && \
  lndir /ennuicastr/libav /var/www/html/ennuizel/libav && \
  lndir /ennuicastr-server/web/rec /var/www/html/rec && \
- ln -s /ennuicastr-server/ws/client/* /ennuicastr-server/ws/ && \
+ ln -s /ennuicastr-server/ws/client /ennuicastr-server/ws/default/rec && \
  ln -s /ennuicastr-server/web/assets/fa /var/www/html/rec && \
  ln -s /ennuicastr-server/web/assets/fa /var/www/html/ennuizel && \
  rm -r /var/www/html/rec/.gitignore* /var/www/html/rec/.es* /var/www/html/rec/*.md /var/www/html/rec/node_modules && \

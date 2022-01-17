@@ -97,7 +97,7 @@ docker-compose exec web sh -c "
 # patch the WS root to get rid of virtualhosts and link everything to default
     sed -ri 's/^root.*$//g' /ennuicastr-server/njsp/njsp.js; \
     ln -s /ennuicastr-server/ws/client/* /ennuicastr-server/ws/rtennui/* /ennuicastr-server/ws/default/; \
-
+    apt install zip at; \
 # TODO -- generate and install paypal subscriptions OOB creation script doesn't work
 #    cd /ennuicastr-server/subscription;
 #    if [ ! -e /external/subscriptions.json ]; then 
