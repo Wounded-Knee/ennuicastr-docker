@@ -58,6 +58,7 @@ RUN \
  lndir /ennuicastr-server/web /var/www/html && \
  lndir /ennuicastr /var/www/html/rec && \
  lndir /ennuicastr-server/web/rec /var/www/html/rec && \
+ ln -s /ennuicastr-server/ws/client/* /ennuicastr-server/ws/ && \
  ln -s /ennuicastr-server/web/assets/fa /var/www/html/rec && \
  rm -r /var/www/html/rec/.gitignore* /var/www/html/rec/.es* /var/www/html/rec/*.md /var/www/html/rec/node_modules && \
  rm -r /var/www/html/rec/libav-configs /var/www/html/rec/src &&\

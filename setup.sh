@@ -43,7 +43,8 @@ docker-compose build
 docker-compose up --no-start
 
 mkdir -p ${PWD}/run/web/nginx/site-confs/
-sed -r "s+\\$\\{PUBLIC_SITE\\}+${PUBLIC_SITE}+g;" ${PWD}/nginx/internal-jitsi.conf > ${PWD}/run/web/nginx/site-confs/jitsi.conf
+sed -r "s+\\$\\{PUBLIC_SITE\\}+${PUBLIC_SITE}+g;" ${PWD}/jitsi-ennuicastr/config/jitsi.conf > ${PWD}/run/web/nginx/site-confs/jitsi.conf
+sed -r "s+\\$\\{PUBLIC_SITE\\}+${PUBLIC_SITE}+g;" ${PWD}/jitsi-ennuicastr/config/jitsi-ssl.conf > ${PWD}/run/web/nginx/site-confs/jitsi.conf
 chown www-data -R ${PWD}/run/web/
 
 # set up hosts for nginx
@@ -86,7 +87,7 @@ if [ ! -e ${PWD}/run/ennuicastr/db ]; then
   chown www-data.www-data -R  ${PWD}/run/ennuicastr
 fi
 
-docker-compose exec web sh -c " 
+docker-compose exec web sh -c "
     sed -ri  's+server_name.*$+server_name ${PUBLIC_SITE}\;+g' /defaults/meet.conf; 
 # TODO -- generate and install paypal subscriptions OOB creation script doesn't work
 #    cd /ennuicastr-server/subscription;
