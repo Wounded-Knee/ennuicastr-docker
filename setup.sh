@@ -30,7 +30,6 @@ sed -r \
  s+~/cert+/external/cert+g;
  s+~/ennuicastr-server/(db|rec|sound)+/external/\1+g; 
  s+~/ennuicastr+/ennuicastr+g; 
-# s+/tmp/ennuicastr-server.sock+/external/ennuicastr-server.sock+g; 
  /google/ {n;s+\"\"+\"${GOOGLE_CLIENT_ID}\"+g;n;s+\"\"+\"${GOOGLE_CLIENT_SECRET}\"+g;}; 
  /paypal/ {n;s+api.paypal+api.sandbox.paypal+;n;s+\"\"+\"${PAYPAL_CLIENT_ID}\"+;n;s+\"\"+\"${PAYPAL_CLIENT_SECRET}\"+;n;s+: \".*\"+: ${PAYPAL_SUBSCRIPTION}+;}; 
 " \
@@ -84,6 +83,7 @@ if [ ! -e ${PWD}/run/web/ennuicastr/db ]; then
     sqlite3 ennuicastr.db < /ennuicastr-server/db/ennuicastr.schema;\
     sqlite3 log.db < /ennuicastr-server/db/log.schema;\
     chown www-data.www-data *.db
+    sed -ri  's+server_name.*$+server_name ${PUBLIC_SITE}\;+g' /defaults/meet.conf; 
   '
   mkdir -p ${PWD}/run/web/ennuicastr/rec
   mkdir -p ${PWD}/run/web/ennuicastr/sounds
@@ -93,7 +93,11 @@ fi
 # TODO: needs to match docker-compose prefix!!!
 docker cp .env ennuicastr_web_1:/var/www/html/.env
 docker-compose exec web sh -c "
-    sed -ri  's+server_name.*$+server_name ${PUBLIC_SITE}\;+g' /defaults/meet.conf; 
+    sed -ri  's+server_name.*$+server_name ${PUBLIC_SITE}\;+g' /defaults/meet.conf; \
+# patch the WS root to get rid of virtualhosts and link everything to default
+    sed -ri 's/^root.*$//g' /ennuicastr-server/njsp/njsp.js; \
+    ln -s /ennuicastr-server/ws/client/* /ennuicastr-server/ws/rtennui/* /ennuicastr-server/ws/default/; \
+
 # TODO -- generate and install paypal subscriptions OOB creation script doesn't work
 #    cd /ennuicastr-server/subscription;
 #    if [ ! -e /external/subscriptions.json ]; then 
@@ -103,7 +107,7 @@ docker-compose exec web sh -c "
 #      echo '\"' >>/external/subscriptions.json; 
 #    fi
 "
-
+docker-compose restart web
 docker-compose up -d
 #docker system prune -af
 
