@@ -1,10 +1,15 @@
 FROM jitsi/web:latest
 WORKDIR .
 EXPOSE 80 443 15000-15050
+VOLUME /config
+VOLUME /external
+VOLUME /var/log/nginx
+VOLUME /usr/share/jitsi-meet/transcripts
+VOLUME /var/spool/cron/crontabs
 RUN apt -q update && apt -qy upgrade && apt -q clean
-RUN apt -q update && apt -qy install curl ffmpeg flac vorbis-tools opus-tools sqlite3 git at zip && apt -q clean
+RUN apt -q update && apt -qy install curl ffmpeg flac vorbis-tools opus-tools sqlite3 git at zip unzip && apt -q clean
 RUN \
- apt -y install make g++ npm && \
+ apt -qy install make g++ npm && \
  git clone https://github.com/ennuicastr/ennuicastr-server.git && \
  cd ennuicastr-server && \
  sed -i 's+https://github.com/mapbox/node-sqlite3/tarball/master+^4.1.1+g' package.json && \
@@ -16,7 +21,7 @@ RUN \
  ln -s /external/config.json /ennuicastr-server/config.json && \
  chown www-data.www-data -R /ennuicastr-server
 RUN \
- apt -y install  make g++ && \
+ apt -qy install  make g++ && \
  git clone https://github.com/ennuicastr/ennuicastr.git && \
  cd ennuicastr && \
  sed -r 's/libavVersion = ".*";/libavVersion = "3.6.4.4.1"/g' src/avloader.ts -i && \
@@ -27,7 +32,7 @@ RUN \
  apt clean && \
  chown www-data.www-data -R /ennuicastr
 RUN \
- apt -y install make g++ cmake pkgconf unzip meson emscripten fftw3-dev lv2-dev && \
+ apt -qy install make g++ cmake pkgconf meson emscripten fftw3-dev lv2-dev && \
  emconfigure; \
  cd /ennuicastr &&\
  git clone https://github.com/ennuizel/ennuizel.git &&\
@@ -62,9 +67,9 @@ RUN \
  cd .. && rm -r libav.js* && \
  sed -i 's+libav-3.6.4.4.1-fat+libav-3.6.4.4.1-ennuicastr+g' libav-3.6.4.4.1-ennuicastr.* && \
  sed -r 's/libavVersion = ".*";/libavVersion = "3.6.4.4.1"/g' /ennuicastr/ennuicastr.js -i && \
- apt -y remove --purge make g++ ninja-build meson cmake pkgconf fftw-dev lv2-dev unzip emscripten && apt -y autoremove --purge && apt clean
+ apt -y remove --purge make g++ ninja-build meson cmake pkgconf fftw-dev lv2-dev emscripten && apt -y autoremove --purge && apt clean
 RUN \
- apt -y install xutils-dev && \
+ apt -qy install xutils-dev && \
  lndir /ennuicastr-server/web /var/www/html && \
  lndir /ennuicastr /var/www/html/rec && \
  lndir /ennuicastr/ennuizel /var/www/html/ennuizel && \
@@ -76,15 +81,10 @@ RUN \
  rm -r /var/www/html/rec/.gitignore* /var/www/html/rec/.es* /var/www/html/rec/*.md /var/www/html/rec/node_modules && \
  rm -r /var/www/html/rec/libav-configs /var/www/html/rec/src &&\
  rm -r /var/www/html/rec/Makefile /var/www/html/rec/*.json &&\
- apt -y remove --purge unzip xutils-dev;  apt -y autoremove --purge;apt clean &&\
+ apt -y remove --purge xutils-dev;  apt -y autoremove --purge;apt clean &&\
  chown www-data.www-data -R /var/www
 
 COPY ./s6/ /etc/services.d/
 COPY ./defaults/ /defaults/
 COPY ./web/ /var/www/html/
 
-VOLUME /config
-VOLUME /external
-VOLUME /var/log/nginx
-VOLUME /usr/share/jitsi-meet/transcripts
-VOLUME /var/spool/cron/crontabs
