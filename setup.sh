@@ -107,10 +107,10 @@ docker-compose exec web sh -c "
 # patch the WS root to get rid of virtualhosts and link everything to default
     sed -ri 's/^root.*$//g' /ennuicastr-server/njsp/njsp.js; \
     ln -s /ennuicastr-server/ws/client/* /ennuicastr-server/ws/rtennui/* /ennuicastr-server/ws/default/; \
-    curl 'https://weca.st/libav/libav-3.6.4.4.1-ennuicastr.js'   -H 'Referer: https://weca.st/awp/ennuicastr-worker.js?v=p' --compressed >/var/www/html/rec/libav-3.6.4.4.1-ennuicastr.js && \
-    curl 'https://weca.st/libav/libav-3.6.4.4.1-ennuicastr.asm.js'   -H 'Referer: https://weca.st/awp/ennuicastr-worker.js?v=p' --compressed >/var/www/html/rec/libav-3.6.4.4.1-ennuicastr.asm.js && \
-    curl 'https://weca.st/libav/libav-3.6.4.4.1-ennuicastr.wasm.js'   -H 'Referer: https://weca.st/awp/ennuicastr-worker.js?v=p' --compressed >/var/www/html/rec/libav-3.6.4.4.1-ennuicastr.wasm.js && \
-    curl 'https://weca.st/libav/libav-3.6.4.4.1-ennuicastr.wasm.wasm'   -H 'Referer: https://weca.st/awp/ennuicastr-worker.js?v=p' --compressed >/var/www/html/rec/libav-3.6.4.4.1-ennuicastr.wasm.wasm && \
+    curl 'https://weca.st/libav/libav-3.6b.4.4.1-ennuicastr.js'   -H 'Referer: https://weca.st/awp/ennuicastr-worker.js?v=p' --compressed >/var/www/html/rec/libav-3.6.4.4.1-ennuicastr.js && \
+    curl 'https://weca.st/libav/libav-3.6b.4.4.1-ennuicastr.asm.js'   -H 'Referer: https://weca.st/awp/ennuicastr-worker.js?v=p' --compressed >/var/www/html/rec/libav-3.6.4.4.1-ennuicastr.asm.js && \
+    curl 'https://weca.st/libav/libav-3.6b.4.4.1-ennuicastr.wasm.js'   -H 'Referer: https://weca.st/awp/ennuicastr-worker.js?v=p' --compressed >/var/www/html/rec/libav-3.6.4.4.1-ennuicastr.wasm.js && \
+    curl 'https://weca.st/libav/libav-3.6b.4.4.1-ennuicastr.wasm.wasm'   -H 'Referer: https://weca.st/awp/ennuicastr-worker.js?v=p' --compressed >/var/www/html/rec/libav-3.6.4.4.1-ennuicastr.wasm.wasm && \
     curl 'https://weca.st/noise-repellent/noise-repellent-m.js'   -H 'Referer: https://weca.st/awp/ennuicastr-worker.js?v=p' --compressed >/var/www/html/rec/noise-repellent/noise-repellent-m.js && \
     curl 'https://weca.st/noise-repellent/noise-repellent-m.asm.js'   -H 'Referer: https://weca.st/awp/ennuicastr-worker.js?v=p' --compressed >/var/www/html/rec/noise-repellent/noise-repellent-m.asm.js && \
     curl 'https://weca.st/noise-repellent/noise-repellent-m.wasm.js'   -H 'Referer: https://weca.st/awp/ennuicastr-worker.js?v=p' --compressed >/var/www/html/rec/noise-repellent/noise-repellent-m.wasm.js && \
