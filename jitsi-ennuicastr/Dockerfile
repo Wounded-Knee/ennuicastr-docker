@@ -10,7 +10,7 @@ RUN apt -q update && apt -qy upgrade && apt -q clean
 RUN apt -q update && apt -qy install curl ffmpeg flac vorbis-tools opus-tools sqlite3 git at zip unzip && apt -q clean
 RUN \
  apt -qy install make g++ npm && \
- git clone https://github.com/ennuicastr/ennuicastr-server.git && \
+ git clone https://github.com/gpapp/ennuicastr-server.git && \
  cd ennuicastr-server && \
  sed -i 's+https://github.com/mapbox/node-sqlite3/tarball/master+^4.1.1+g' package.json && \
  sed -i '/tryPort =/ {s+36678+15000+;s+16384+50+;}' server/ennuicastr.ts &&\

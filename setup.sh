@@ -19,7 +19,7 @@ fi
 if [ ! -e ${PWD}/run/web/ennuicastr/config.json.example ]; then
 	mkdir -p ${PWD}/run/web/ennuicastr
 	chown www-data.www-data -R ${PWD}/run/web/ennuicastr/
-	curl https://raw.githubusercontent.com/ennuicastr/ennuicastr-server/master/config.json.example -o ${PWD}/run/web/ennuicastr/config.json.example
+	curl https://raw.githubusercontent.com/gpapp/ennuicastr-server/master/config.json.example -o ${PWD}/run/web/ennuicastr/config.json.example
 fi
 
 if [ ! -e ${PWD}/run/prosody ]; then
@@ -55,6 +55,8 @@ chown www-data -R ${PWD}/run/web/
 
 # set up hosts for nginx
 rm ${PWD}/run/web/logs/*
+ln -s /var/log/nginx/*castr.*.*-*.log ${PWD}/run/web/logs
+
 sed -r \
 "s+ennuicastr.com+${PUBLIC_SITE}+g;
  s+r.ennuicastr.com+${PUBLIC_SITE}/rec+g;
@@ -72,30 +74,28 @@ fi
 
 
 ##Always copy config to Prosody
-if [ ! -e ${PWD}/run/prosody/config/certs/jitsi.${PUBLIC_SITE}.key ]; then
-  docker-compose restart prosody
-  mkdir -p ${PWD}/run/prosody/config/certs/
+if [ ! -e ${PWD}/run/prosody/config/conf.d/jitsi.${PUBLIC_SITE}.cfg.lua ]; then
+  mkdir -p ${PWD}/run/prosody/config/certs/ ${PWD}/run/prosody/config/conf.d/
   cp /etc/letsencrypt/live/jitsi.${PUBLIC_SITE}/cert.pem ${PWD}/run/prosody/config/certs/jitsi.${PUBLIC_SITE}.crt
   cp /etc/letsencrypt/live/jitsi.${PUBLIC_SITE}/privkey.pem ${PWD}/run/prosody/config/certs/jitsi.${PUBLIC_SITE}.key
-  cp ${PWD}/jitsi-ennuicastr/prosody/* -r ${PWD}/run/prosody/config/
-  sed -i "s+https://meet.jitsi+https://jitsi.${PUBLIC_SITE}+g;s+/certs/meet.jitsi+/certs/jitsi.${PUBLIC_SITE}+g" ${PWD}/run/prosody/config/conf.d/jitsi-meet.cfg.lua
+  sed -r "s+BASENAME+${PUBLIC_SITE}+g" ${PWD}/jitsi-ennuicastr/prosody/conf.d/jitsi.template.cfg.lua >${PWD}/run/prosody/config/conf.d/jitsi.${PUBLIC_SITE}.cfg.lua
+#  sed -i "s+https://meet.jitsi+https://jitsi.${PUBLIC_SITE}+g;s+/certs/meet.jitsi+/certs/jitsi.${PUBLIC_SITE}+g" ${PWD}/run/prosody/config/conf.d/jitsi-meet.cfg.lua
   chown 101.102 -R  ${PWD}/run/prosody
   docker-compose restart prosody
 fi
-
 
 docker-compose start web
 
 #initialize DB
 if [ ! -e ${PWD}/run/web/ennuicastr/db ]; then
-  docker-compose exec web sh -c ' \
+  docker-compose exec web sh -c " \
     mkdir -p /external/db; \
     cd /external/db; \
     sqlite3 ennuicastr.db < /ennuicastr-server/db/ennuicastr.schema;\
     sqlite3 log.db < /ennuicastr-server/db/log.schema;\
     chown www-data.www-data *.db
-    sed -ri  's+server_name.*$+server_name ${PUBLIC_SITE}\;+g' /defaults/meet.conf; 
-  '
+    sed -ri 's+server_name.*$+server_name ${PUBLIC_SITE}\;+g' /defaults/meet.conf; 
+  "
   mkdir -p ${PWD}/run/web/ennuicastr/rec
   mkdir -p ${PWD}/run/web/ennuicastr/sounds
   chown www-data.www-data -R  ${PWD}/run/web/ennuicastr

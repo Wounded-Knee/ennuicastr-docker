@@ -1,9 +1,12 @@
-VirtualHost "jitsi.castr.zartosztaly.hu"
+consider_websocket_secure = true;
+consider_bosh_secure = true;
+
+VirtualHost "jitsi.BASENAME"
     authentication = "jitsi-anonymous"
 
     ssl = {
-        key = "/config/certs/jitsi.castr.zartosztaly.hu.key";
-        certificate = "/config/certs/jitsi.castr.zartosztaly.hu.crt";
+        key = "/config/certs/jitsi.BASENAME.key";
+        certificate = "/config/certs/jitsi.BASENAME.crt";
     }
     modules_enabled = {
         "bosh";
