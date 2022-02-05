@@ -22,8 +22,9 @@ RUN \
  chown www-data.www-data -R /ennuicastr-server
 RUN \
  apt -qy install  make g++ && \
- git clone https://github.com/ennuicastr/ennuicastr.git && \
+ git clone https://github.com/gpapp/ennuicastr.git && \
  cd ennuicastr && \
+ sed -r 's_^(.*)domain.*,$_\1domain: "meet.jitsi",_g;s_^(.*)muc: "conference\.jitsi\.".*$_\1muc: "muc.meet.jitsi"_g;' src/jitsi.ts -i && \
  sed -r 's/libavVersion = ".*";/libavVersion = "3.6.4.4.1"/g' src/avloader.ts -i && \
  sed -r 's/libavVersion = ".*";/libavVersion = "3.6.4.4.1"/g' awp/ennuicastr-worker.ts -i && \
  make && \

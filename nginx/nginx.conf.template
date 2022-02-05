@@ -14,7 +14,7 @@ server {
     index index.jss index.html;
 
     add_header 'Cross-Origin-Opener-Policy' 'same-origin' always;
-#    add_header 'Cross-Origin-Embedder-Policy' 'require-corp' always;
+    add_header 'Cross-Origin-Embedder-Policy' 'require-corp' always;
     add_header 'Service-Worker-Allowed' '/download-stream-service-worker/' always;
 
     add_header 'Access-Control-Allow-Origin' '$http_origin' always;
@@ -25,7 +25,7 @@ server {
     add_header 'Referrer-Policy' 'origin' always;
     add_header 'Permissions-Policy' 'geolocation=(), microphone=(self "https://ennuicastr.com")' always;
     add_header 'Content-Security-Policy' 
-		"default-src 'self' ; script-src 'self' data: 'unsafe-inline' 'unsafe-eval' https://www.paypalobjects.com:* https://www.paypal.com:* ; script-src-elem 'self' data: 'unsafe-inline' 'unsafe-eval' https://accounts.google.com:* https://www.paypal.com:* ; style-src 'self' data: 'unsafe-inline' https://fonts.googleapis.com:* https://accounts.google.com:* ; img-src 'self' data: https://www.paypalobjects.com:* https://px.ads.linkedin.com:* https://www.facebook.com:* https://googleads.g.doubleclick.net:* ; font-src 'self' data: https://fonts.googleapis.com:* https://fonts.gstatic.com:* https://www.paypalobjects.com:* ; connect-src 'self' data: https://jitsi.ennuicastr.com:* wss://jitsi.ennuicastr.com:* wss://ennuicastr.com:* https://accounts.google.com:*  https://www.paypal.com:* https://www.sandbox.paypal.com:* ; media-src 'self' ; object-src 'self' ; child-src 'self' ; frame-src 'self' data: https://accounts.google.com:* https://www.paypal.com:* https://www.sandbox.paypal.com:* ; worker-src 'self' ; form-action 'self' ; frame-ancestors 'self' ; upgrade-insecure-requests; block-all-mixed-content; base-uri https://ennuicastr.com:*; manifest-src 'self' 'self' 'self';"
+		"default-src 'self' ; script-src 'self' data: 'unsafe-inline' 'unsafe-eval' https://www.paypalobjects.com:* https://www.paypal.com:* ; script-src-elem 'self' data: 'unsafe-inline' 'unsafe-eval' https://accounts.google.com:* https://www.paypal.com:* ; style-src 'self' data: 'unsafe-inline' https://fonts.googleapis.com:* https://accounts.google.com:* ; img-src 'self' data: https://www.paypalobjects.com:* https://px.ads.linkedin.com:* https://www.facebook.com:* https://googleads.g.doubleclick.net:* ; font-src 'self' data: https://fonts.googleapis.com:* https://fonts.gstatic.com:* https://www.paypalobjects.com:* ; connect-src 'self' data: https://jitsi.ennuicastr.com:* wss://jitsi.ennuicastr.com:* wss://ennuicastr.com:* https://accounts.google.com:*  https://www.paypal.com:* https://www.sandbox.paypal.com:* ; media-src 'self' ; object-src 'self' ; child-src 'self' ; frame-src 'self' data: https://accounts.google.com:* https://www.paypal.com:* https://www.sandbox.paypal.com:* ; worker-src 'self' data: data; form-action 'self' ; frame-ancestors 'self' ; upgrade-insecure-requests; block-all-mixed-content; base-uri https://ennuicastr.com:*; manifest-src 'self' 'self' 'self';"
 		always;
 
     location ~ /ws$ {

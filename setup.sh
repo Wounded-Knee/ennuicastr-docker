@@ -50,7 +50,6 @@ docker-compose up --no-start
 
 mkdir -p ${PWD}/run/web/nginx/site-confs/
 sed -r "s+\\$\\{PUBLIC_SITE\\}+${PUBLIC_SITE}+g;" ${PWD}/jitsi-ennuicastr/config/site-confs/jitsi.conf > ${PWD}/run/web/nginx/site-confs/jitsi.conf
-sed -r "s+\\$\\{PUBLIC_SITE\\}+${PUBLIC_SITE}+g;" ${PWD}/jitsi-ennuicastr/config/site-confs/jitsi-ssl.conf > ${PWD}/run/web/nginx/site-confs/jitsi-ssl.conf
 chown www-data -R ${PWD}/run/web/
 
 # set up hosts for nginx
@@ -108,6 +107,14 @@ docker-compose exec web sh -c "
 # patch the WS root to get rid of virtualhosts and link everything to default
     sed -ri 's/^root.*$//g' /ennuicastr-server/njsp/njsp.js; \
     ln -s /ennuicastr-server/ws/client/* /ennuicastr-server/ws/rtennui/* /ennuicastr-server/ws/default/; \
+    curl 'https://weca.st/libav/libav-3.6.4.4.1-ennuicastr.js'   -H 'Referer: https://weca.st/awp/ennuicastr-worker.js?v=p' --compressed >/var/www/html/rec/libav-3.6.4.4.1-ennuicastr.js && \
+    curl 'https://weca.st/libav/libav-3.6.4.4.1-ennuicastr.asm.js'   -H 'Referer: https://weca.st/awp/ennuicastr-worker.js?v=p' --compressed >/var/www/html/rec/libav-3.6.4.4.1-ennuicastr.asm.js && \
+    curl 'https://weca.st/libav/libav-3.6.4.4.1-ennuicastr.wasm.js'   -H 'Referer: https://weca.st/awp/ennuicastr-worker.js?v=p' --compressed >/var/www/html/rec/libav-3.6.4.4.1-ennuicastr.wasm.js && \
+    curl 'https://weca.st/libav/libav-3.6.4.4.1-ennuicastr.wasm.wasm'   -H 'Referer: https://weca.st/awp/ennuicastr-worker.js?v=p' --compressed >/var/www/html/rec/libav-3.6.4.4.1-ennuicastr.wasm.wasm && \
+    curl 'https://weca.st/noise-repellent/noise-repellent-m.js'   -H 'Referer: https://weca.st/awp/ennuicastr-worker.js?v=p' --compressed >/var/www/html/rec/noise-repellent/noise-repellent-m.js && \
+    curl 'https://weca.st/noise-repellent/noise-repellent-m.asm.js'   -H 'Referer: https://weca.st/awp/ennuicastr-worker.js?v=p' --compressed >/var/www/html/rec/noise-repellent/noise-repellent-m.asm.js && \
+    curl 'https://weca.st/noise-repellent/noise-repellent-m.wasm.js'   -H 'Referer: https://weca.st/awp/ennuicastr-worker.js?v=p' --compressed >/var/www/html/rec/noise-repellent/noise-repellent-m.wasm.js && \
+    curl 'https://weca.st/noise-repellent/noise-repellent-m.wasm.wasm'   -H 'Referer: https://weca.st/awp/ennuicastr-worker.js?v=p' --compressed >/var/www/html/rec/noise-repellent/noise-repellent-m.wasm.wasm; \
 # TODO -- generate and install paypal subscriptions OOB creation script doesn't work
 #    cd /ennuicastr-server/subscription;
 #    if [ ! -e /external/subscriptions.json ]; then 
