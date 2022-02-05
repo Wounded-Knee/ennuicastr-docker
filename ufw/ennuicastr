@@ -1,0 +1,4 @@
+[ennuicastr]
+title=Ennuicastr
+description=Ennuicastr and Jitsi rules
+ports=10000/udp|4443/tcp|15000:15050/tcp

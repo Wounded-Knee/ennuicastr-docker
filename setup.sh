@@ -6,6 +6,10 @@ if [ ! -e ${PWD}/.env ]; then
 	exit
 fi
 sed -r 's+(^[~=])*=[ \t]*([^"].*)+\1="\2"+;/^#/d;/^$/d' .env >.bashenv;source .bashenv;rm .bashenv
+if [ ! -e /etc/ufw/applications.d/ennuicastr ]; then
+	cp ufw/ennuicastr /etc/ufw/applications.d/
+	ufw allow ennuicastr
+fi
 if [ -z "$JVB_AUTH_PASSWORD" ]; then
 	curl https://raw.githubusercontent.com/jitsi/docker-jitsi-meet/master/gen-passwords.sh -o ${PWD}/gen-passwords.sh
 	chmod +x ${PWD}/gen-passwords.sh
@@ -19,7 +23,10 @@ if [ ! -e ${PWD}/run/web/ennuicastr/config.json.example ]; then
 fi
 
 if [ ! -e ${PWD}/run/prosody ]; then
-    mkdir -p ${PWD}/run/{web/crontabs,web/logs,transcripts,prosody/config,prosody/prosody-plugins-custom,jicofo,jvb}
+    mkdir -p ${PWD}/run/{web/crontabs,web/logs,transcripts,prosody/config/data,prosody/prosody-plugins-custom,jicofo,jvb}
+
+    chown www-data.www-data -R  ${PWD}/run/
+    chown 101.102 -R  ${PWD}/run/prosody
 fi
 
 sed -r \
@@ -63,15 +70,19 @@ if [ ! -e ${PWD}/run/web/ennuicastr/cert ]; then
   chown www-data.www-data -R  ${PWD}/run/web/ennuicastr
 fi
 
+
 ##Always copy config to Prosody
-#if [ ! -e ${PWD}/run/prosody/config/certs/jitsi.${PUBLIC_SITE}.key ]; then
+if [ ! -e ${PWD}/run/prosody/config/certs/jitsi.${PUBLIC_SITE}.key ]; then
+  docker-compose restart prosody
   mkdir -p ${PWD}/run/prosody/config/certs/
   cp /etc/letsencrypt/live/jitsi.${PUBLIC_SITE}/cert.pem ${PWD}/run/prosody/config/certs/jitsi.${PUBLIC_SITE}.crt
   cp /etc/letsencrypt/live/jitsi.${PUBLIC_SITE}/privkey.pem ${PWD}/run/prosody/config/certs/jitsi.${PUBLIC_SITE}.key
   cp ${PWD}/jitsi-ennuicastr/prosody/* -r ${PWD}/run/prosody/config/
   sed -i "s+https://meet.jitsi+https://jitsi.${PUBLIC_SITE}+g;s+/certs/meet.jitsi+/certs/jitsi.${PUBLIC_SITE}+g" ${PWD}/run/prosody/config/conf.d/jitsi-meet.cfg.lua
-  chown www-data.www-data -R  ${PWD}/run/prosody
-#fi
+  chown 101.102 -R  ${PWD}/run/prosody
+  docker-compose restart prosody
+fi
+
 
 docker-compose start web
 
