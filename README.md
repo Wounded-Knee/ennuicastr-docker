@@ -65,6 +65,7 @@ docker exec -it ennuicastr_web_1 bash
 
 ## Known issues
 - Fix BOSH connection -- maybe needs to use another certificate?
+- fix issue with ws on sound uploads (kills stream after 5 seconds!)
 - Fix secret.js creation and inclusion for creating Paypal subscription (needs to be done manually ATM, because secrets.js does not work!)
 
 ## Todo
