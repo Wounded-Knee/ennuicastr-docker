@@ -1,6 +1,6 @@
 FROM jitsi/web:latest
 WORKDIR .
-EXPOSE 80 443 15000-15050
+EXPOSE 80 15000-15050
 VOLUME /config
 VOLUME /external
 VOLUME /var/log/nginx
@@ -47,26 +47,25 @@ RUN \
  cd ennuizel-better-normalization-plugin && make && cd .. &&\
  git clone https://github.com/Yahweasel/ennuizel-ennuicastr-plugin.git &&\
  cd ennuizel-ennuicastr-plugin && make && cd .. &&\
- rm -rf /ennuicastr/noise-repellent/noise-repellent.js &&\
- cd /ennuicastr/noise-repellent && \
- git clone https://github.com/Yahweasel/noise-repellent.js.git && \
- cd /ennuicastr/noise-repellent/noise-repellent.js && \
- meson build && \
- make && \
+# rm -rf /ennuicastr/noise-repellent/noise-repellent.js &&\
+# cd /ennuicastr/noise-repellent && \
+# git clone https://github.com/Yahweasel/noise-repellent.js.git && \
+# cd /ennuicastr/noise-repellent/noise-repellent.js && \
+# meson build && \
 # make && \
- cp noise-repellent-m.js noise-repellent-m.asm.js noise-repellent-m.wasm.js noise-repellent-m.wasm.wasm .. &&\
- cd .. && rm -rf /ennuicastr/noise-repellent/noise-repellent.js &&\
- cd /ennuicastr/libav && \
- wget https://github.com/Yahweasel/libav.js/releases/download/v3.6.4.4.1/libav.js-3.6.4.4.1.zip && \
- unzip libav.js-3.6.4.4.1.zip && cd libav.js-3.6.4.4.1 &&\
- cp libav-3.6.4.4.1-fat.* /ennuicastr/ennuizel/libav && \
- cp libav-3.6.4.4.1-fat.asm.js libav-3.6.4.4.1-ennuicastr.asm.js && \
- cp libav-3.6.4.4.1-fat.js libav-3.6.4.4.1-ennuicastr.js && \
- cp libav-3.6.4.4.1-fat.wasm.js libav-3.6.4.4.1-ennuicastr.wasm.js && \
- cp libav-3.6.4.4.1-fat.wasm.wasm libav-3.6.4.4.1-ennuicastr.wasm.wasm && \
- cp libav-*-ennuicastr.* .. && \
- cd .. && rm -r libav.js* && \
- sed -i 's+libav-3.6.4.4.1-fat+libav-3.6.4.4.1-ennuicastr+g' libav-3.6.4.4.1-ennuicastr.* && \
+# cp noise-repellent-m.js noise-repellent-m.asm.js noise-repellent-m.wasm.js noise-repellent-m.wasm.wasm .. &&\
+# cd .. && rm -rf /ennuicastr/noise-repellent/noise-repellent.js &&\
+# cd /ennuicastr/libav && \
+# wget https://github.com/Yahweasel/libav.js/releases/download/v3.6.4.4.1/libav.js-3.6.4.4.1.zip && \
+# unzip libav.js-3.6.4.4.1.zip && cd libav.js-3.6.4.4.1 &&\
+# cp libav-3.6.4.4.1-fat.* /ennuicastr/ennuizel/libav && \
+# cp libav-3.6.4.4.1-fat.asm.js libav-3.6.4.4.1-ennuicastr.asm.js && \
+# cp libav-3.6.4.4.1-fat.js libav-3.6.4.4.1-ennuicastr.js && \
+# cp libav-3.6.4.4.1-fat.wasm.js libav-3.6.4.4.1-ennuicastr.wasm.js && \
+# cp libav-3.6.4.4.1-fat.wasm.wasm libav-3.6.4.4.1-ennuicastr.wasm.wasm && \
+# cp libav-*-ennuicastr.* .. && \
+# cd .. && rm -r libav.js* && \
+# sed -i 's+libav-3.6.4.4.1-fat+libav-3.6.4.4.1-ennuicastr+g' libav-3.6.4.4.1-ennuicastr.* && \
  sed -r 's/libavVersion = ".*";/libavVersion = "3.6.4.4.1"/g' /ennuicastr/ennuicastr.js -i && \
  apt -y remove --purge make g++ ninja-build meson cmake pkgconf fftw-dev lv2-dev emscripten && apt -y autoremove --purge && apt clean
 RUN \

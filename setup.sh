@@ -48,6 +48,13 @@ docker-compose pull
 docker-compose build
 docker-compose up --no-start
 
+## COPY CERTIFICATES needed to open WS server sockets directly 
+if [ ! -e ${PWD}/run/web/ennuicastr/cert ]; then
+  mkdir -p ${PWD}/run/web/ennuicastr/cert
+  cp /etc/letsencrypt/live/${PUBLIC_SITE}/fullchain.pem ${PWD}/run/web/ennuicastr/cert
+  cp /etc/letsencrypt/live/${PUBLIC_SITE}/privkey.pem ${PWD}/run/web/ennuicastr/cert
+  chown www-data.www-data -R  ${PWD}/run/web/ennuicastr
+fi
 mkdir -p ${PWD}/run/web/nginx/site-confs/
 sed -r "s+\\$\\{PUBLIC_SITE\\}+${PUBLIC_SITE}+g;" ${PWD}/jitsi-ennuicastr/config/site-confs/jitsi.conf > ${PWD}/run/web/nginx/site-confs/jitsi.conf
 chown www-data -R ${PWD}/run/web/
@@ -63,25 +70,6 @@ sed -r \
  s+ez.ennuicastr.com+${PUBLIC_SITE}/ennuizel+g;
 " \
 ${PWD}/nginx/nginx.conf.template > ${PWD}/nginx/nginx.conf
-## COPY CERTIFICATES
-if [ ! -e ${PWD}/run/web/ennuicastr/cert ]; then
-  mkdir -p ${PWD}/run/web/ennuicastr/cert
-  cp /etc/letsencrypt/live/${PUBLIC_SITE}/fullchain.pem ${PWD}/run/web/ennuicastr/cert
-  cp /etc/letsencrypt/live/${PUBLIC_SITE}/privkey.pem ${PWD}/run/web/ennuicastr/cert
-  chown www-data.www-data -R  ${PWD}/run/web/ennuicastr
-fi
-
-
-##Always copy config to Prosody
-if [ ! -e ${PWD}/run/prosody/config/conf.d/jitsi.${PUBLIC_SITE}.cfg.lua ]; then
-  mkdir -p ${PWD}/run/prosody/config/certs/ ${PWD}/run/prosody/config/conf.d/
-  cp /etc/letsencrypt/live/jitsi.${PUBLIC_SITE}/cert.pem ${PWD}/run/prosody/config/certs/jitsi.${PUBLIC_SITE}.crt
-  cp /etc/letsencrypt/live/jitsi.${PUBLIC_SITE}/privkey.pem ${PWD}/run/prosody/config/certs/jitsi.${PUBLIC_SITE}.key
-  sed -r "s+BASENAME+${PUBLIC_SITE}+g" ${PWD}/jitsi-ennuicastr/prosody/conf.d/jitsi.template.cfg.lua >${PWD}/run/prosody/config/conf.d/jitsi.${PUBLIC_SITE}.cfg.lua
-#  sed -i "s+https://meet.jitsi+https://jitsi.${PUBLIC_SITE}+g;s+/certs/meet.jitsi+/certs/jitsi.${PUBLIC_SITE}+g" ${PWD}/run/prosody/config/conf.d/jitsi-meet.cfg.lua
-  chown 101.102 -R  ${PWD}/run/prosody
-  docker-compose restart prosody
-fi
 
 docker-compose start web
 
